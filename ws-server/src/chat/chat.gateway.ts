@@ -6,7 +6,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from "@nestjs/websockets";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 @WebSocketGateway({
   namespace: "/chat",
   cors: true,
@@ -14,7 +14,8 @@ import { Socket } from "socket.io";
   pingInterval: 25000,
 }) // <-- namespace /chat
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() wss: Socket;
+  @WebSocketServer()
+  server: Server;
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
@@ -26,6 +27,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("messageToServer")
   handleMessage(@MessageBody() data: { user: string; message: string }) {
-    this.wss.emit("messageToClient", data);
+    this.server.emit("messageToClient", data);
   }
 }
