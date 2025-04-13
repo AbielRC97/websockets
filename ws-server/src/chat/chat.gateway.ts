@@ -5,10 +5,10 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
-} from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+} from "@nestjs/websockets";
+import { Socket } from "socket.io";
 @WebSocketGateway({
-  namespace: '/chat',
+  namespace: "/chat",
   cors: true,
   pingTimeout: 60000,
   pingInterval: 25000,
@@ -24,8 +24,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage('messageToServer')
+  @SubscribeMessage("messageToServer")
   handleMessage(@MessageBody() data: { user: string; message: string }) {
-    this.wss.emit('messageToClient', data);
+    this.wss.emit("messageToClient", data);
   }
 }
